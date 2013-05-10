@@ -22,8 +22,7 @@ unsigned int Game::mKeyPressed = 0;
 unsigned int Game::mKeyTapped = 0;
 
 #ifdef NDEBUG
-sf::RenderWindow Game::mWindow(sf::VideoMode::getDesktopMode(), "Rocky Flight Balloon", sf::Style::None /*sf::Style::Close | sf::Style::Titlebar | sf::Style::Fullscreen*/);
-//sf::RenderWindow Game::mWindow(sf::VideoMode(640, 480), "Rocky Flight Balloon", sf::Style::Close | sf::Style::Titlebar);
+sf::RenderWindow Game::mWindow(sf::VideoMode::getDesktopMode(), "Rocky Flight Balloon", sf::Style::Close | sf::Style::Fullscreen);
 #else
 sf::RenderWindow Game::mWindow(sf::VideoMode(640, 480), "Rocky Flight Balloon", sf::Style::Close | sf::Style::Titlebar);
 #endif
@@ -31,7 +30,8 @@ sf::RenderWindow Game::mWindow(sf::VideoMode(640, 480), "Rocky Flight Balloon", 
 int Game::run(void) {
 	static const sf::Time stepTime(sf::milliseconds(10));
 	static const sf::Time second(sf::seconds(1));
-	static const int maxSteps = 10;
+	static const sf::Time micro(sf::microseconds(1));
+	static const int maxSteps = 5;
 
 #ifdef NDEBUG
 	mWindow.setVerticalSyncEnabled(true);
@@ -231,7 +231,7 @@ int Game::run(void) {
 		}
 
 		tupdates = 0;
-		for (updateTime += updateClock.restart(); running && updateTime > stepTime; updateTime += updateClock.restart() - stepTime) {
+		for (updateTime += updateClock.restart(); running && updateTime > stepTime; updateTime += /*updateClock.restart()*/ - stepTime) {
 			if (tupdates < maxSteps) {
 				switch (screen) {
 				case SCREEN_INIT:
@@ -331,7 +331,6 @@ int Game::run(void) {
 			else {
 				updateTime = sf::Time::Zero;
 			}
-			sf::sleep(sf::microseconds(1));
 		}
 
 		mWindow.clear(sf::Color::White);
@@ -432,7 +431,7 @@ int Game::run(void) {
 			mWindow.setTitle(tmp);
 #endif
 		}
-		sf::sleep(sf::microseconds(1));
+		sf::sleep(micro);
 	}
 	player.reset();
 	bramble.reset();
